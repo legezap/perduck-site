@@ -1,7 +1,9 @@
 /* ============================================================
-   (Per)Duck Events — Enterprise Interactions
+   (Per)Duck Events — 2026 Interactions
+   Parallax · Counter · Stagger · Cinematic
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
+
   /* --- Navbar scroll --- */
   const nav = document.querySelector('.navbar');
   const onScroll = () => nav && nav.classList.toggle('scrolled', window.scrollY > 40);
@@ -55,15 +57,84 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* --- Scroll Reveal (IntersectionObserver) --- */
-  const reveals = document.querySelectorAll('.reveal');
+  /* ============================================================
+     PARALLAX — Hero + Cinematic Dividers
+     ============================================================ */
+  const parallaxEls = document.querySelectorAll('.hero-bg, .cine-divider-bg');
+  if (parallaxEls.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let ticking = false;
+    const updateParallax = () => {
+      const scrollY = window.scrollY;
+      parallaxEls.forEach(el => {
+        const section = el.closest('section, .cine-divider, .hero');
+        if (!section) return;
+        const rect = section.getBoundingClientRect();
+        const sectionH = section.offsetHeight;
+        // Only animate when in viewport
+        if (rect.bottom < -100 || rect.top > window.innerHeight + 100) return;
+        const progress = (window.innerHeight - rect.top) / (window.innerHeight + sectionH);
+        const offset = (progress - 0.5) * 80; // +-40px movement
+        el.style.transform = `translate3d(0, ${offset}px, 0)`;
+      });
+      ticking = false;
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(updateParallax); ticking = true; }
+    }, { passive: true });
+    updateParallax();
+  }
+
+  /* ============================================================
+     SCROLL REVEAL — IntersectionObserver with stagger support
+     ============================================================ */
+  const reveals = document.querySelectorAll('.reveal, .reveal-clip, .reveal-scale');
   if (reveals.length && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-    }, { threshold: 0.15 });
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
     reveals.forEach(el => io.observe(el));
   } else {
     reveals.forEach(el => el.classList.add('visible'));
+  }
+
+  /* ============================================================
+     COUNTER ANIMATION — Stats numbers count up on scroll
+     ============================================================ */
+  const statNums = document.querySelectorAll('[data-count]');
+  if (statNums.length && 'IntersectionObserver' in window) {
+    const countUp = (el) => {
+      const target = parseInt(el.dataset.count, 10);
+      const suffix = el.dataset.suffix || '';
+      const prefix = el.dataset.prefix || '';
+      const duration = 2000;
+      const start = performance.now();
+
+      const animate = (now) => {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease out cubic
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(eased * target);
+        el.textContent = prefix + current + suffix;
+        if (progress < 1) requestAnimationFrame(animate);
+      };
+      requestAnimationFrame(animate);
+    };
+
+    const counterIO = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          countUp(e.target);
+          counterIO.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    statNums.forEach(el => counterIO.observe(el));
   }
 
   /* --- Sticky Anchor Nav Highlight --- */
@@ -90,7 +161,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* --- Multi-step RFP Form --- */
+  /* ============================================================
+     MULTI-STEP RFP FORM
+     ============================================================ */
   const rfpForm = document.getElementById('rfpForm');
   if (rfpForm) {
     let step = 0;
@@ -107,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
       step = n;
     };
 
-    // Service selection
     rfpForm.querySelectorAll('.svc-opt').forEach(opt => {
       opt.addEventListener('click', () => {
         rfpForm.querySelectorAll('.svc-opt').forEach(o => o.classList.remove('selected'));
@@ -118,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Validation per step
     const validateStep = (n) => {
       let valid = true;
       if (n === 0) {
@@ -151,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return valid;
     };
 
-    // Next / Prev buttons
     rfpForm.querySelectorAll('[data-next]').forEach(btn => {
       btn.addEventListener('click', () => { if (validateStep(step) && step < totalSteps - 1) showStep(step + 1); });
     });
@@ -159,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', () => { if (step > 0) showStep(step - 1); });
     });
 
-    // Submit
     rfpForm.addEventListener('submit', (e) => {
       e.preventDefault();
       if (!validateStep(step)) return;
@@ -169,13 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (err) { err.classList.add('show'); err.textContent = 'Please agree to the privacy policy.'; }
         return;
       }
-      // Generate RFP ID
       const now = new Date();
       const dateStr = now.getFullYear().toString() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
       const rand = String(Math.floor(1000 + Math.random() * 9000));
       const rfpId = 'PD-' + dateStr + '-' + rand;
 
-      // Show success
       rfpForm.style.display = 'none';
       const success = document.getElementById('rfpSuccess');
       if (success) {
@@ -184,7 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (idEl) idEl.textContent = rfpId;
       }
 
-      // Submit to Formspree in background
       const fd = new FormData(rfpForm);
       fd.append('rfp_id', rfpId);
       fetch('https://formspree.io/f/xwpkpbjn', { method: 'POST', body: fd, headers: { 'Accept': 'application/json' } }).catch(() => {});
