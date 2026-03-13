@@ -226,9 +226,34 @@ h3 { font-size: clamp(1.2rem, 2vw, 1.5rem); }
     display: flex;
     align-items: center;
     padding: 120px 0 80px;
-    background: radial-gradient(ellipse at 30% 50%, rgba(142, 197, 87, 0.08) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 20%, rgba(142, 197, 87, 0.04) 0%, transparent 50%),
-                var(--bg);
+    background: var(--bg);
+    overflow: hidden;
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+.hero-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.2;
+    filter: saturate(0.5);
+}
+
+.hero .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: linear-gradient(135deg, rgba(10,10,10,0.85) 0%, rgba(10,10,10,0.6) 50%, rgba(10,10,10,0.85) 100%);
 }
 
 .hero-content {
@@ -505,6 +530,27 @@ h3 { font-size: clamp(1.2rem, 2vw, 1.5rem); }
     border-radius: var(--radius-lg);
     overflow: hidden;
     cursor: pointer;
+}
+
+.portfolio-card.portfolio-wide {
+    grid-column: span 2;
+}
+
+.portfolio-img-photo {
+    position: relative;
+    background: none !important;
+}
+.portfolio-img-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.portfolio-card:hover .portfolio-img-photo img {
+    transform: scale(1.05);
 }
 
 .portfolio-img {
@@ -1073,6 +1119,9 @@ h3 { font-size: clamp(1.2rem, 2vw, 1.5rem); }
 
     .portfolio-grid {
         grid-template-columns: 1fr;
+    }
+    .portfolio-card.portfolio-wide {
+        grid-column: span 1;
     }
 
     .vv-layout,
