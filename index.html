@@ -17,9 +17,13 @@
   <link rel="canonical" href="https://perduck.com/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Noto+Sans+Arabic:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Noto+Sans+Arabic:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="stylesheet" href="style.css">
+  <link rel="alternate" hreflang="en" href="https://perduck.com/">
+  <link rel="alternate" hreflang="ar" href="https://perduck.com/?lang=ar">
+  <link rel="alternate" hreflang="ru" href="https://perduck.com/?lang=ru">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -88,6 +92,7 @@
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html" class="btn btn-nav btn-primary">Get a Quote</a></li>
     </ul>
+    <div class="lang-switcher" aria-label="Language"></div>
     <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -132,29 +137,29 @@
     </div>
     <div class="hero-overlay"></div>
     <div class="container hero-content">
-      <div class="hero-badge reveal">Dubai-Based, Globally Deployed</div>
-      <h1 class="reveal">We Build Experiences<br>That <span class="accent">Command Attention</span></h1>
-      <p class="hero-sub reveal">Exhibition stands, event production, and immersive brand environments from <strong>18 sqm to 700 sqm</strong>. Trusted by Microsoft, Vanderlande, and brands across 6 countries.</p>
+      <div class="hero-badge reveal" data-i18n="hero.badge">Dubai-Based, Globally Deployed</div>
+      <h1 class="reveal" data-i18n="hero.title">We Build Experiences<br>That <span class="accent">Command Attention</span></h1>
+      <p class="hero-sub reveal" data-i18n="hero.sub">Exhibition stands, event production, and immersive brand environments from <strong>18 sqm to 700 sqm</strong>. Trusted by Microsoft, Vanderlande, and brands across 6 countries.</p>
       <div class="hero-cta reveal">
-        <a href="contact.html" class="btn btn-primary btn-lg">Start Your Project <span class="arrow">&#8594;</span></a>
-        <a href="portfolio.html" class="btn btn-outline btn-lg">View Our Work</a>
+        <a href="contact.html" class="btn btn-primary btn-lg" data-i18n="hero.cta.start">Start Your Project <span class="arrow">&#8594;</span></a>
+        <a href="portfolio.html" class="btn btn-outline btn-lg" data-i18n="hero.cta.work">View Our Work</a>
       </div>
       <div class="hero-stats reveal">
         <div class="hero-stat">
           <div class="num" data-count="80" data-suffix="+">0</div>
-          <div class="label">Projects Delivered</div>
+          <div class="label" data-i18n="hero.stat.projects">Projects Delivered</div>
         </div>
         <div class="hero-stat">
           <div class="num" data-count="6">0</div>
-          <div class="label">Countries</div>
+          <div class="label" data-i18n="hero.stat.countries">Countries</div>
         </div>
         <div class="hero-stat">
           <div class="num" data-count="700">0</div>
-          <div class="label">sqm Largest Build</div>
+          <div class="label" data-i18n="hero.stat.sqm">sqm Largest Build</div>
         </div>
         <div class="hero-stat">
           <div class="num" data-count="100" data-suffix="%">0</div>
-          <div class="label">On-Time Delivery</div>
+          <div class="label" data-i18n="hero.stat.ontime">On-Time Delivery</div>
         </div>
       </div>
     </div>
@@ -194,14 +199,14 @@
   <!-- TRUST BAR -->
   <section class="trust-bar" aria-label="Trusted by">
     <div class="container">
-      <p class="trust-label">Trusted by industry leaders</p>
+      <p class="trust-label" data-i18n="trust.label">Trusted by industry leaders</p>
       <div class="trust-logos">
-        <span class="trust-item">Microsoft</span>
-        <span class="trust-item">Altronix</span>
-        <span class="trust-item">Vanderlande</span>
-        <span class="trust-item">Spark Logistics</span>
-        <span class="trust-item">Absolut Skandic</span>
-        <span class="trust-item">IK Group</span>
+        <img src="assets/logos/microsoft.svg" alt="Microsoft" class="trust-logo" width="140" height="40" loading="lazy">
+        <img src="assets/logos/altronix.svg" alt="Altronix" class="trust-logo" width="120" height="40" loading="lazy">
+        <img src="assets/logos/vanderlande.svg" alt="Vanderlande" class="trust-logo" width="150" height="40" loading="lazy">
+        <img src="assets/logos/spark.svg" alt="Spark Logistics" class="trust-logo" width="160" height="40" loading="lazy">
+        <img src="assets/logos/absolut-skandic.svg" alt="Absolut Skandic" class="trust-logo" width="160" height="40" loading="lazy">
+        <img src="assets/logos/ik-group.svg" alt="IK Group" class="trust-logo" width="100" height="40" loading="lazy">
       </div>
     </div>
   </section>
@@ -210,9 +215,9 @@
   <section id="services">
     <div class="container">
       <div class="section-header">
-        <span class="section-label reveal">What We Do</span>
-        <h2 class="reveal">Full-Spectrum Exhibition<br><span class="accent">& Event Solutions</span></h2>
-        <p class="reveal">From the first sketch to the final walkthrough, we handle every detail so you can focus on what matters: your audience.</p>
+        <span class="section-label reveal" data-i18n="services.label">What We Do</span>
+        <h2 class="reveal" data-i18n="services.title">Full-Spectrum Exhibition<br><span class="accent">& Event Solutions</span></h2>
+        <p class="reveal" data-i18n="services.desc">From the first sketch to the final walkthrough, we handle every detail so you can focus on what matters: your audience.</p>
       </div>
       <div class="services-grid stagger">
         <div class="service-card reveal">
@@ -251,8 +256,8 @@
     <div class="cine-divider-overlay"></div>
     <div class="cine-divider-content">
       <div class="container">
-        <h2 class="reveal-clip">700 sqm. Double Decker.<br>Microsoft at LEAP.</h2>
-        <p class="reveal">Our largest build to date — a partner-centric pavilion in Riyadh.</p>
+        <h2 class="reveal-clip" data-i18n="cine.microsoft">700 sqm. Double Decker.<br>Microsoft at LEAP.</h2>
+        <p class="reveal" data-i18n="cine.microsoft.sub">Our largest build to date — a partner-centric pavilion in Riyadh.</p>
       </div>
     </div>
   </div>
@@ -261,9 +266,9 @@
   <section id="portfolio">
     <div class="container">
       <div class="section-header">
-        <span class="section-label reveal">Selected Work</span>
-        <h2 class="reveal">Projects That Speak<br><span class="accent">for Themselves</span></h2>
-        <p class="reveal">From a 700 sqm double-decker for Microsoft to a refined 18 sqm compact stand — every project gets our full commitment.</p>
+        <span class="section-label reveal" data-i18n="portfolio.label">Selected Work</span>
+        <h2 class="reveal" data-i18n="portfolio.title">Projects That Speak<br><span class="accent">for Themselves</span></h2>
+        <p class="reveal" data-i18n="portfolio.desc">From a 700 sqm double-decker for Microsoft to a refined 18 sqm compact stand — every project gets our full commitment.</p>
       </div>
       <div class="portfolio-grid stagger">
         <div class="project-card reveal">
@@ -323,7 +328,7 @@
     <div class="cine-divider-overlay"></div>
     <div class="cine-divider-content">
       <div class="container">
-        <h2 class="reveal-clip">Every Square Meter<br>Engineered for Impact.</h2>
+        <h2 class="reveal-clip" data-i18n="cine.impact">Every Square Meter<br>Engineered for Impact.</h2>
       </div>
     </div>
   </div>
@@ -421,8 +426,8 @@
   <!-- CTA -->
   <section class="cta-section">
     <div class="container">
-      <h2 class="reveal">Ready to Build Something<br>Remarkable?</h2>
-      <p class="reveal">Tell us about your next exhibition or event. We respond within 24 hours.</p>
+      <h2 class="reveal" data-i18n="cta.title">Ready to Build Something<br>Remarkable?</h2>
+      <p class="reveal" data-i18n="cta.desc">Tell us about your next exhibition or event. We respond within 24 hours.</p>
       <div class="reveal" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
         <a href="contact.html" class="btn btn-lg">Start Your Project <span class="arrow">&#8594;</span></a>
         <a href="portfolio.html" class="btn btn-lg" style="background:transparent;border:1px solid rgba(0,0,0,.2);">See Our Work</a>
@@ -481,5 +486,7 @@
 </a>
 
 <script src="script.js"></script>
+<script src="i18n.js"></script>
+<script src="analytics.js"></script>
 </body>
 </html>
