@@ -162,6 +162,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ============================================================
+     FORM DRAFT PERSISTENCE (safe: 24h TTL, clear on submit)
+     ============================================================ */
+  const DRAFT_KEY = 'tbd-rfp-draft-static';
+  const DRAFT_TTL = 24 * 60 * 60 * 1000;
+
+  function loadFormDraft() {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return null;
+      const env = JSON.parse(raw);
+      if (Date.now() - env.ts > DRAFT_TTL) { localStorage.removeItem(DRAFT_KEY); return null; }
+      return env.data;
+    } catch { return null; }
+  }
+  function saveFormDraft(data) {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
+  }
+  function clearFormDraft() { localStorage.removeItem(DRAFT_KEY); }
+
+  /* ============================================================
      MULTI-STEP RFP FORM
      ============================================================ */
   const rfpForm = document.getElementById('rfpForm');
@@ -243,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const rand = String(Math.floor(1000 + Math.random() * 9000));
       const rfpId = 'PD-' + dateStr + '-' + rand;
 
+      clearFormDraft();
       rfpForm.style.display = 'none';
       const success = document.getElementById('rfpSuccess');
       if (success) {
@@ -254,6 +275,64 @@ document.addEventListener('DOMContentLoaded', () => {
       const fd = new FormData(rfpForm);
       fd.append('rfp_id', rfpId);
       fetch('https://formspree.io/f/xwpkpbjn', { method: 'POST', body: fd, headers: { 'Accept': 'application/json' } }).catch(() => {});
+    });
+
+    // --- Draft persistence ---
+    const formInputs = rfpForm.querySelectorAll('input:not([type="checkbox"]):not([type="hidden"]), select, textarea');
+
+    // Restore draft
+    const draft = loadFormDraft();
+    if (draft) {
+      formInputs.forEach(inp => {
+        if (draft[inp.name || inp.id]) inp.value = draft[inp.name || inp.id];
+      });
+      if (draft._service) {
+        rfpForm.querySelectorAll('.svc-opt').forEach(opt => {
+          if (opt.dataset.value === draft._service) {
+            opt.classList.add('selected');
+            selectedService = draft._service;
+            const hidden = rfpForm.querySelector('[name="service_type"]');
+            if (hidden) hidden.value = draft._service;
+          }
+        });
+      }
+      // Show notice
+      const wrap = rfpForm.closest('.rfp-wrap');
+      if (wrap && !wrap.querySelector('.draft-notice')) {
+        const notice = document.createElement('div');
+        notice.className = 'draft-notice';
+        notice.style.cssText = 'display:flex;align-items:center;justify-content:space-between;background:rgba(252,217,64,0.1);border:1px solid rgba(252,217,64,0.3);border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:0.8rem;';
+        notice.innerHTML = '<span style="color:var(--color-text-muted)">💾 Draft restored</span><button type="button" style="background:none;border:none;color:var(--color-accent);cursor:pointer;font-size:0.8rem;font-weight:600">Clear</button>';
+        notice.querySelector('button').addEventListener('click', () => {
+          clearFormDraft();
+          formInputs.forEach(inp => { inp.value = ''; });
+          rfpForm.querySelectorAll('.svc-opt').forEach(o => o.classList.remove('selected'));
+          selectedService = '';
+          notice.remove();
+          showStep(0);
+        });
+        wrap.insertBefore(notice, wrap.firstChild);
+      }
+    }
+
+    // Auto-save on input
+    formInputs.forEach(inp => {
+      inp.addEventListener('input', () => {
+        const data = { _service: selectedService };
+        formInputs.forEach(f => { data[f.name || f.id] = f.value; });
+        saveFormDraft(data);
+      });
+    });
+
+    // Also save when service is selected
+    rfpForm.querySelectorAll('.svc-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        setTimeout(() => {
+          const data = { _service: selectedService };
+          formInputs.forEach(f => { data[f.name || f.id] = f.value; });
+          saveFormDraft(data);
+        }, 50);
+      });
     });
 
     showStep(0);
