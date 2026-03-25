@@ -72,3 +72,49 @@
   // Noscript pixel fallback is handled via <noscript> in HTML
   window._ymId = YM_ID;
 })();
+
+// --- Download Tracking ---
+// Tracks PDF/document downloads and sends to n8n webhook for Airtable activity log
+(function() {
+  var DOWNLOAD_WEBHOOK = ''; // <-- REPLACE with your n8n webhook URL: https://YOUR-N8N.app.n8n.cloud/webhook/download-track
+
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest('a[href$=".pdf"], #capabilityDownload');
+    if (!link) return;
+
+    var fileName = link.getAttribute('href') || 'unknown';
+    var pagePath = window.location.pathname;
+
+    // Track in GA4 if available
+    if (window.gtag) {
+      window.gtag('event', 'file_download', {
+        event_category: 'conversion',
+        event_label: fileName,
+        file_name: fileName
+      });
+    }
+
+    // Track in Yandex Metrica if available
+    if (window.ym && window._ymId) {
+      window.ym(window._ymId, 'reachGoal', 'download', { file: fileName });
+    }
+
+    // Send to n8n webhook for CRM tracking (non-blocking)
+    if (DOWNLOAD_WEBHOOK) {
+      var payload = JSON.stringify({
+        event: 'file_download',
+        file_name: fileName,
+        page: pagePath,
+        timestamp: new Date().toISOString(),
+        referrer: document.referrer || 'direct',
+        user_agent: navigator.userAgent
+      });
+      // Use sendBeacon for reliable delivery even if user navigates away
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(DOWNLOAD_WEBHOOK, new Blob([payload], { type: 'application/json' }));
+      } else {
+        fetch(DOWNLOAD_WEBHOOK, { method: 'POST', body: payload, headers: { 'Content-Type': 'application/json' }, keepalive: true }).catch(function() {});
+      }
+    }
+  });
+})();
