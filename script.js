@@ -272,9 +272,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (idEl) idEl.textContent = rfpId;
       }
 
-      const fd = new FormData(rfpForm);
-      fd.append('rfp_id', rfpId);
-      fetch('https://formspree.io/f/xwpkpbjn', { method: 'POST', body: fd, headers: { 'Accept': 'application/json' } }).catch(() => {});
+      const payload = {
+        rfp_id: rfpId,
+        service_type: selectedService,
+        event_name: (rfpForm.querySelector('#eventName') || {}).value || '',
+        event_dates: (rfpForm.querySelector('#eventDates') || {}).value || '',
+        event_location: (rfpForm.querySelector('#eventLocation') || {}).value || '',
+        booth_size: (rfpForm.querySelector('#boothSize') || {}).value || '',
+        budget_range: (rfpForm.querySelector('#budget') || {}).value || '',
+        full_name: (rfpForm.querySelector('#fullName') || {}).value || '',
+        company: (rfpForm.querySelector('#company') || {}).value || '',
+        email: (rfpForm.querySelector('#email') || {}).value || '',
+        phone: (rfpForm.querySelector('#phone') || {}).value || '',
+        country: (rfpForm.querySelector('#country') || {}).value || '',
+        notes: (rfpForm.querySelector('#notes') || {}).value || '',
+        submitted_at: new Date().toISOString(),
+        source: window.location.href
+      };
+      fetch('https://pavellegeza.app.n8n.cloud/webhook/inbound-lead', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' }
+      }).catch(() => {});
     });
 
     // --- Draft persistence ---
